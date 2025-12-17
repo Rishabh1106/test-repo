@@ -200,13 +200,13 @@ sequenceDiagram
   API->>SQLite: SELECT conversation WHERE id
   SQLite-->>API: conversation (mode=rag)
   API->>PDF: extract_text(file.pdf)
-  PDF-->>API: extracted text (large)
+  PDF-->>API: extracted text
   API->>SQLite: INSERT document chunks into `documents` table
   API->>SQLite: INSERT conversation_document link
   API->>MsgSvc: persist user message
   MsgSvc->>SQLite: INSERT INTO messages (conversation_id, role='user', content)
   MsgSvc->>Cache: invalidate(conversation:{id})
-  MsgSvc->>Retriever: query documents table with simple heuristics (substring / score)
+  MsgSvc->>Retriever: query documents table
   Retriever-->>MsgSvc: top_k chunks
   MsgSvc->>LLM: call_llm(context = system + recent raw + top_k + user)
   LLM-->>MsgSvc: assistant reply
